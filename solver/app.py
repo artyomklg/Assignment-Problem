@@ -13,7 +13,6 @@ def solve_assignment_problem_single(costs: list[list[int]], maximaze: bool):
 
     model = cp_model.CpModel()
 
-    # Variables
     x = []
     for i in range(num_workers):
         t = []
@@ -37,7 +36,6 @@ def solve_assignment_problem_single(costs: list[list[int]], maximaze: bool):
         for j in range(num_tasks):
             model.Add(sum(x[i][j] for i in range(num_workers)) <= 1)
 
-    # Objective
     objective_terms = []
     for i in range(num_workers):
         for j in range(num_tasks):
@@ -47,7 +45,6 @@ def solve_assignment_problem_single(costs: list[list[int]], maximaze: bool):
     else:
         model.Minimize(sum(objective_terms))
 
-    # Solve
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
 
@@ -73,10 +70,8 @@ def solve_assignment_problem(
     num_workers = len(costs1)
     num_tasks = len(costs1[0])
 
-    # Create the model.
     model = cp_model.CpModel()
 
-    # Variables
     x = []
     for i in range(num_workers):
         t = []
@@ -84,7 +79,6 @@ def solve_assignment_problem(
             t.append(model.NewBoolVar("x[%i,%i]" % (i, j)))
         x.append(t)
 
-    # Constraints
     if num_workers == num_tasks:
         for i in range(num_workers):
             model.Add(sum(x[i][j] for j in range(num_tasks)) == 1)
@@ -101,7 +95,6 @@ def solve_assignment_problem(
         for j in range(num_tasks):
             model.Add(sum(x[i][j] for i in range(num_workers)) <= 1)
 
-    # Objective
     objective_terms = []
     for i in range(num_workers):
         for j in range(num_tasks):
@@ -111,7 +104,6 @@ def solve_assignment_problem(
 
     model.Maximize(sum(objective_terms))
 
-    # Solve
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
 
@@ -132,7 +124,6 @@ def solve_assignment_problem(
         return None, None
 
 
-# Example usage
 if __name__ == "__main__":
     costs1 = [
         [3, 2, 5, 0, 0, 1, 4],
