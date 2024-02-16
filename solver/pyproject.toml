@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 ortools = "^9.8.3296"
+fastapi = "^0.109.2"
 
 
 [build-system]
