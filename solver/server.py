@@ -14,7 +14,7 @@ class DoubleSolve(BaseModel):
 
 
 @app.post("/solve_single")
-def solve_single(matrix: list[list[float]], maximaze: bool = Query(True)):
+def solve_single(matrix: list[list[float | int]], maximaze: bool = Query(True)):
     coeff = 1 if maximaze else -1
     solver = AssignmentSolver(costses=[matrix], coeffs=[coeff])
 
