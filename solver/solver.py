@@ -2,7 +2,7 @@ from ortools.sat.python import cp_model
 
 
 class AssignmentSolver:
-    def __init__(self, costses: list[list[list[int]]], coeffs: list[float]):
+    def __init__(self, costses: list[list[list[float]]], coeffs: list[float]):
         if len(costses) == 2:
             self._costs1 = costses[0]
             self._costs2 = costses[1]
