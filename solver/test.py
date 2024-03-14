@@ -26,13 +26,9 @@ if __name__ == "__main__":
         [1304, 1463, 1120, 609, 1086, 1328, 1137],
     ]
 
-    solver1 = AssignmentSolver(costses=[costs1], coeffs=[1])
-    solver2 = AssignmentSolver(costses=[costs2], coeffs=[-1])
     solvern = AssignmentSolver(costses=[costs1, costs2], coeffs=[0.5, -0.5])
 
-    resh1, sum1 = solver1.solve()
-    resh2, sum2 = solver2.solve()
-    reshn, sumn = solvern.solve()
+    reshn, sumn, a = solvern.solve()
 
     pprint(resh1)
     print(sum1)

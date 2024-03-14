@@ -1,4 +1,7 @@
-from fastapi import FastAPI, Query
+from decimal import Decimal
+from typing import Literal
+
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from solver import AssignmentSolver
@@ -6,28 +9,35 @@ from solver import AssignmentSolver
 app = FastAPI()
 
 
-class DoubleSolve(BaseModel):
-    matrix1: list[list[float]]
-    matrix2: list[list[float]]
-    coeff1: float
-    coeff2: float
+class Payload(BaseModel):
+    matrix: list[list[float]]
+    coefficient: float
+    option: Literal["min", "max"]
 
 
-@app.post("/solve_single")
-def solve_single(matrix: list[list[float | int]], maximaze: bool = Query(True)):
-    coeff = 1 if maximaze else -1
-    solver = AssignmentSolver(costses=[matrix], coeffs=[coeff])
-
-    resh, sum_proizv = solver.solve()
-    return {"resh": resh, "sum": sum_proizv}
+class ReshResponse(BaseModel):
+    resh: list[list[Literal[0, 1]]]
+    sum_proizv: list[float]
+    normalized_sum: float
 
 
-@app.post("/solve_double")
-def solve_double(payload: DoubleSolve):
-    solver = AssignmentSolver(
-        costses=[payload.matrix1, payload.matrix2],
-        coeffs=[payload.coeff1, payload.coeff2],
-    )
+@app.post("/solve", response_model=ReshResponse)
+def solve(payloads: list[Payload]):
+    total_coefficient = Decimal(0)
+    for payload in payloads:
+        total_coefficient += Decimal(payload.coefficient)
+    if total_coefficient != Decimal(1):
+        raise HTTPException(
+            status_code=400, detail="The total coefficient is not equal to 1"
+        )
+    matrixes = []
+    coeffs = []
+    for payload in payloads:
+        matrixes.append(payload.matrix)
+        coeffs.append(
+            payload.coefficient if payload.option == "max" else payload.coefficient * -1
+        )
+    solver = AssignmentSolver(costses=matrixes, coeffs=coeffs)
 
-    resh, sum_proizv = solver.solve()
-    return {"resh": resh, "sum": sum_proizv}
+    matrix_resh, normalized_sum, sum_proizv = solver.solve()
+    return {"resh": matrix_resh, "sum_proizv": sum_proizv, "normalized": normalized_sum}
