@@ -131,10 +131,15 @@ const MainPage = () => {
       })
       .catch(error => {
         console.error('Error solving tasks:', error);
-        // Показываем всплывающее уведомление об ошибке
-        toast.error('Ошибка: Сумма коэффициентов не равна 1', {
-          position: toast.POSITION.TOP_CENTER
-        });
+        setSolution(null);
+        if (error.response && error.response.status === 400) {
+          toast.error('Ошибка: Сумма коэффициентов не равна 1');
+        }
+        else if (error.response && error.response.status === 422){
+          toast.error('Ошибка: Неправильно введены данные');
+        } else {
+          toast.error(`Ошибка ${error.response.status}: ${error.response.data.message}`);
+        }
       });
   };
 
@@ -173,8 +178,6 @@ const MainPage = () => {
       ))}
       <button onClick={handleCreateMatrix}>Создать новую матрицу</button>
       <button onClick={solveTasks}>Решить задачи</button>
-      {/* Добавляем компонент для всплывающих уведомлений */}
-      <ToastContainer />
       {solution && (
         <div>
           <h2>Матрица решения</h2>
@@ -201,6 +204,7 @@ const MainPage = () => {
           <p>{solution.normalized_sum}</p>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

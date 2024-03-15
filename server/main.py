@@ -4,7 +4,6 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
 from solver import AssignmentSolver
 
 app = FastAPI()
@@ -54,4 +53,8 @@ def solve(payloads: list[Payload]):
     solver = AssignmentSolver(costses=matrixes, coeffs=coeffs)
 
     matrix_resh, normalized_sum, sum_proizv = solver.solve()
-    return {"resh": matrix_resh, "sum_proizv": sum_proizv, "normalized": normalized_sum}
+    return {
+        "resh": matrix_resh,
+        "sum_proizv": sum_proizv,
+        "normalized_sum": normalized_sum,
+    }
