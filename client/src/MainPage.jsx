@@ -3,6 +3,7 @@ import MatrixComponent from './MatrixComponent';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './MainPage.css'
 
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000' // замените на фактический URL вашего сервера
@@ -138,50 +139,60 @@ const MainPage = () => {
         else if (error.response && error.response.status === 422){
           toast.error('Ошибка: Неправильно введены данные');
         } else {
-          toast.error(`Ошибка ${error.response.status}: ${error.response.data.message}`);
+          toast.error(`Ошибка ${error.code}: ${error.message}`);
         }
       });
   };
 
   return (
-    <div>
-      <h1>Название вашего приложения</h1>
-      <label>
-        Количество строк:
-        <input
-          type="number"
-          value={rows}
-          onChange={(e) => handleRowsChange(parseInt(e.target.value))}
-        />
-      </label>
-      <label>
-        Количество столбцов:
-        <input
-          type="number"
-          value={columns}
-          onChange={(e) => handleColumnsChange(parseInt(e.target.value))}
-        />
-      </label>
-      {matrices.map(matrix => (
-        <MatrixComponent
-        key={matrix.id}
-        matrixData={matrix.matrixData}
-        coefficient={matrix.coefficient}
-        selectedOption={matrix.selectedOption}
-        id={matrix.id}
-        onDelete={handleDeleteMatrix}
-        onMatrixChange={handleMatrixChange}
-        onFillMatrixRandom={handleFillMatrixRandom}
-        onSelectedOptionChange={handleSelectedOptionChange}
-        onCoefficientChange={handleCoefficientChange}
-      />
-      ))}
-      <button onClick={handleCreateMatrix}>Создать новую матрицу</button>
-      <button onClick={solveTasks}>Решить задачи</button>
+    <div className="main-container">
+      <h1>Решение задачи о назначении</h1>
+      <div className="input-container">
+        <div>
+          <label>
+            Количество строк:
+            <input
+              type="number"
+              value={rows}
+              onChange={(e) => handleRowsChange(parseInt(e.target.value))}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Количество столбцов:
+            <input
+              type="number"
+              value={columns}
+              onChange={(e) => handleColumnsChange(parseInt(e.target.value))}
+            />
+          </label>
+        </div>
+      </div>
+      <div className="matrices-container">
+        {matrices.map(matrix => (
+          <MatrixComponent
+            key={matrix.id}
+            matrixData={matrix.matrixData}
+            coefficient={matrix.coefficient}
+            selectedOption={matrix.selectedOption}
+            id={matrix.id}
+            onDelete={handleDeleteMatrix}
+            onMatrixChange={handleMatrixChange}
+            onFillMatrixRandom={handleFillMatrixRandom}
+            onSelectedOptionChange={handleSelectedOptionChange}
+            onCoefficientChange={handleCoefficientChange}
+          />
+        ))}
+      </div>
+      <div className="button-container">
+        <button onClick={handleCreateMatrix}>Создать новую матрицу</button>
+        <button onClick={solveTasks}>Решить задачи</button>
+      </div>
       {solution && (
         <div>
           <h2>Матрица решения</h2>
-          <table>
+          <table className="matrix-table">
             <tbody>
               {solution.resh.map((row, rowIndex) => (
                 <tr key={rowIndex}>
